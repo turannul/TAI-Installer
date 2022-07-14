@@ -1,0 +1,159 @@
+##############################
+#########REPOS#TO#ADD#########
+##############################
+repos=(http://apt.thebigboss.org/repofiles/cydia/ https://apt.bingner.com/ https://randy-420.github.io/)
+
+#############################
+######TWEAKS#TO#INSTALL######
+#############################
+sharedTweaks=(clang curl git grep perl rsync unzip ldid make xar lz4 com.kabiroberai.swift-toolchain com.opa334.ccsupport odcctools)
+procursusTweaks=(xz-utils plutil com.randy420.taidependscoolstar com.randy420.tai)
+otherTweaks=(clang-10 coreutils coreutils-bin xz dpkg darwintools llvm llvm-10 libllvm10 com.bingner.plutil openssl com.randy420.taidependsother com.randy420.tai)
+
+suites=("stable" "./" "./")
+components=("main" "" "")
+
+########################
+#######DONT#TOUCH#######
+########################
+P='\033[0;35m' #Purple
+taurine="/.installed_taurine"
+taurineMsg="$(tput setaf 5;)Taurine"
+odyssey="/odyssey"
+odysseyMsg="${P}Odyssey"
+odysseyRa1n="/.installed_odyssey"
+odysseyRa1nMsg="$(tput setab 0;)${P}Odysseyra1n"
+checkRa1n="/.bootstrapped"
+checkRa1nMsg="$(tput setaf 7;)$(tput setab 0;)checkra1n"
+u0="/.installed_unc0ver"
+u0Msg="${B}$(tput setaf 0;)$(tput setab 7;)unc0ver"
+
+procursus=(/.procursus_strapped)
+test -d "$procursus"
+procursusStrapped=$?
+#echo "procursus \"$procursusStrapped\""
+
+Cydia=(/Applications/Cydia.app)
+test -d "$Cydia"
+cydiaInstalled=$?
+#echo "cydia \"$cydiaInstalled\""
+
+Sileo=(/Applications/Sileo.app)
+test -d "$Sileo"
+sileoInstalled=$?
+#echo "sileo \"$sileoInstalled\""
+
+Installer=(/Applications/Installer.app) #low priority
+test -d "$Installer"
+installerInstalled=$?
+#echo "installer \"$installerInstalled\""
+
+Zebra=(/Applications/Zebra.app) #low priority
+test -d "$Zebra"
+zebraInstalled=$?
+#echo "zebra \"$zebraInstalled\""
+#Part of uptime2
+
+checkRoot(){
+	if [[ "$EUID" -ne 0 ]]; then
+		echo "Installer needs to be run with root privileges."
+		exit
+	fi
+}
+
+checkRepo(){
+	repoList=$1
+	shift 1
+	Repo= $1
+	if [[ "$repoList" == "xyz.willy.Zebra" ]]; then
+		echo "$(cat /var/mobile/Library/Application\ Support/xyz.willy.Zebra/sources.list 2>/dev/null | grep "$Repo" | sed -n 's,deb ,,g; s, ./,,pg')"
+	else
+		for file in /etc/apt/sources.list.d/*; do
+			found=$(cat "$file" 2>/dev/null | grep "$Repo" | sed -n 's,deb ,,g; s, ./,,pg')
+			if [[ "$found" == "$Repo" ]]; then
+				echo "$found"
+			fi
+		done
+	fi
+}
+
+checkJailbreak(){
+	while true; do
+		jbd=$1
+		shift 1
+		Return="$1"
+		shift 1
+
+		if [[ "$jbd" = "" ]]; then
+			echo "FAIL"
+			exit 1
+		fi
+
+		if test -f "$jbd"; then
+			echo "$Return"
+			return
+		fi
+	done
+}
+
+addRepos(){
+	i=0
+	for repo in ${repos[@]}; do
+		suite="${suites[$i]}"
+		component=("${components[$i]}")
+#		echo "suite: $suite
+#component: $component"
+
+		inApt=$(checkRepo "420" "$repo")
+		inZebra=$(checkRepo "xyz.willy.Zebra" "$repo")
+echo "ZEBRA: \"$inZebra\"
+REPO: \"$repo\""
+exit
+		if [[ zebraInstalled -eq 0 ]]; then
+			if [[ "$inZebra" != "$repo" ]];then
+				echo "zebra shit here"
+				cat << EOF >> /var/mobile/Library/Application\ Support/xyz.willy.Zebra/sources.list
+
+deb $repo $suite $component
+
+EOF
+echo "$repo was added to Zebra successfully."
+			fi
+		fi
+
+		if [[ "$inApt" != "$repo" ]]; then
+			echo "Source was not added, anyway ill add"
+			cat << EOF >> /etc/apt/sources.list.d/Turann.list
+
+deb $repo $suite $component
+
+EOF
+			echo "$repo was added to apt successfully."
+		fi
+
+		i=$((i+1))
+	done
+
+	echo "Updating sources may take a while..."
+	apt update >/dev/null 2>&1 #stfu apt
+}
+
+installDebs()
+{
+	Install "${sharedTweaks[@]}"
+
+	if [[ procursusStrapped -eq 0 ]]; then
+		echo $(tput setaf 190)"Should install from Procursus" $(tput sgr0;) #for Procursus
+		Install "${procursusTweaks[@]}"
+	else
+		echo $(tput setaf 190)"Should install from Bingner" $(tput sgr0;) #for Other
+		Install "${otherTweaks[@]}"
+	fi
+}
+
+Install(){
+	tweaks=$@
+	for tweak in $tweaks; do
+		apt install $tweak -y --allow-unauthenticated --allow-downgrades
+	done
+}
