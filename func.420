@@ -1,7 +1,7 @@
 ##############################
 #########REPOS#TO#ADD#########
 ##############################
-repos=(http://apt.thebigboss.org/repofiles/cydia/ https://apt.bingner.com/ https://randy-420.github.io/)
+repos=(http://apt.thebigboss.org/repofiles/cydia/  https://randy-420.github.io/)
 
 #############################
 ######TWEAKS#TO#INSTALL######
@@ -10,8 +10,8 @@ sharedTweaks=(clang curl git grep perl rsync unzip ldid make xar lz4 com.kabirob
 procursusTweaks=(xz-utils plutil com.randy420.taidependscoolstar com.randy420.tai)
 otherTweaks=(clang-10 coreutils coreutils-bin xz dpkg darwintools llvm llvm-10 libllvm10 com.bingner.plutil openssl com.randy420.taidependsother com.randy420.tai)
 
-suites=("stable" "./" "./")
-components=("main" "" "")
+suites=("stable" "./")
+components=("main" "")
 
 ########################
 #######DONT#TOUCH#######
@@ -138,22 +138,26 @@ EOF
 	apt update >/dev/null 2>&1 #stfu apt
 }
 
-installDebs()
-{
-	Install "${sharedTweaks[@]}"
+Installdepends(){
 
 	if [[ procursusStrapped -eq 0 ]]; then
-		echo $(tput setaf 190)"Should install from Procursus" $(tput sgr0;) #for Procursus
-		Install "${procursusTweaks[@]}"
-	else
-		echo $(tput setaf 190)"Should install from Bingner" $(tput sgr0;) #for Other
-		Install "${otherTweaks[@]}"
+
+echo $(tput setaf 190)"Should install for Procursus" $(tput sgr0;) 
+
+dpkg -i files/tai-depends-procursus.deb
+	
+            else
+		
+echo $(tput setaf 190)"Should install for Bingner" $(tput sgr0;) 
+
+dpkg -i files/tai-depends-other.deb
 	fi
 }
 
-Install(){
-	tweaks=$@
-	for tweak in $tweaks; do
-		apt install $tweak -y --allow-unauthenticated --allow-downgrades
-	done
+Installtai(){
+	
+dpkg -i files/420tools.deb
+
+dpkg -i files/tai.deb
+
 }
