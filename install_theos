@@ -77,6 +77,6 @@ EOF
                    dpkg --configure -a 
                    #Just to make sure everything is okay.
                    rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
+                   killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
                    echo "We are done here."
                    exit 0
-    
