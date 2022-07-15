@@ -50,12 +50,16 @@ EOF
                    echo "$deb3 was not found, downloading..."
                    wget -q --show-progress $deb3down 
                    dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb
+                   apt --fix-broken install -y --allow-unauthenticated
+                   #Quick note dpkg -i does not install depends with so apt is required.
                    else		
                    echo $(tput setaf 190)"Should install from Bingner" $(tput setaf 2)
                    if [ ! -f "$deb2" ]; then
                    echo "$deb2 was not found, downloading..."
                    wget -q --show-progress $deb2down 
                    dpkg -i 420tools.deb tai-depends-other.deb tai.deb
+                   apt --fix-broken install -y --allow-unauthenticated
+                   #Quick note dpkg -i does not install depends with so apt is required.
                    fi
                      fi
                        fi
@@ -64,6 +68,8 @@ EOF
                            
                    # In case if you embed script in preferences. gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb & dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb cam be used with.
                    echo "Cleaning up..."
+                   dpkg --configure -a 
+                   #Just to make sure everything is okay.
                    rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
                    echo "We are done here."
                    exit 0
