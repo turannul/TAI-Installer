@@ -1,3 +1,0 @@
-# Theos-CoolStar-Dependencies
-
-
