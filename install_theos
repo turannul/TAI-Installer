@@ -1,0 +1,68 @@
+#! /bin/bash
+procursus=(/.procursus_strapped)
+deb1=(420tools.deb) deb1down=(https://turannul.github.io/home/420tools.deb)
+deb2=(tai-depends-other.deb) deb2down=(https://turannul.github.io/home/tai-depends-other.deb)
+deb3=(tai-depends-procursus.deb) deb3down=(https://turannul.github.io/home/tai-depends-procursus.deb)
+deb4=(tai.deb) deb4down=(https://turannul.github.io/home/tai.deb)
+(tput setab 0)
+(tput setaf 2)
+
+
+	if [[ "$EUID" -ne 0 ]]; then
+		echo "TAI Installer needs to be run with root privileges."
+		exit
+	fi
+	
+	echo "Checking for wget..."
+	if test ! "$(which wget)"; then
+	echo "wget is not found, installing now."
+        apt install wget -y
+    fi
+    
+    echo "Checking for deb files..."
+  
+if [ ! -f "$deb1" ]; then
+echo ".deb not found, Downloading.."
+    wget -q --show-progress $deb1down
+    if [ ! -f "$deb2" ]; then
+echo ".deb not found, Downloading.."
+    wget -q --show-progress $deb2down
+    if [ ! -f "$deb3" ]; then
+echo ".deb not found, Downloading.."
+    wget -q --show-progress $deb3down
+    if [ ! -f "$deb4" ]; then
+echo ".deb not found, Downloading.."
+    wget -q --show-progress $deb4down
+fi
+  fi
+    fi
+      fi #I love doing this
+
+    
+    
+    
+cat << EOF
+ _____  _    ___   ___           _        _ _           
+|_   _|/ \  |_ _| |_ _|_ __  ___| |_ __ _| | | ___ _ __ 
+  | | / _ \  | |   | || '_ \/ __| __/ _  | | |/ _ \ '__|
+  | |/ ___ \ | |   | || | | \__ \ || (_| | | |  __/ |   
+  |_/_/   \_\___| |___|_| |_|___/\__\__ _|_|_|\___|_|   
+                                                        
+EOF
+ 
+
+echo "I recommend connecting to Wi-Fi before proceeding."
+sleep 10 #give some time connect to Wi-Fi or option to stop?
+
+    if test -f "$procursus" ; then
+echo $(tput setaf 190)"Should install from Procursus" $(tput sgr0;) 
+                   dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb
+	else		
+echo $(tput setaf 190)"Should install from Bingner" $(tput sgr0;) 
+                   dpkg -i 420tools.deb tai-depends-other.deb tai.deb
+    fi
+    # In case if you embed script in preferences. gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb & dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb cam be used with.
+    echo "We are done here. Cleaning up..."
+rm $deb1 $deb2 $deb3 $deb4 
+exit 0
+    
