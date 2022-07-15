@@ -6,7 +6,7 @@ deb3=(tai-depends-procursus.deb) deb3down=(https://turannul.github.io/home/tai-d
 deb4=(tai.deb) deb4down=(https://turannul.github.io/home/tai.deb)
 (tput setab 0)
 (tput setaf 2)
-
+clear
                    if [[ "$EUID" -ne 0 ]]; then
                    echo "TAI Installer needs to be run with root privileges."
                    exit
@@ -53,10 +53,10 @@ EOF
                    sleep 10 #give some time connect to Wi-Fi or option to stop?
 
                    if test -f "$procursus" ; then
-                   echo $(tput setaf 190)"Should install from Procursus"
+                   echo "Should install from Procursus"
                    dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb
                    else		
-                   echo $(tput setaf 190)"Should install from Bingner"
+                   echo "Should install from Bingner"
                    dpkg -i 420tools.deb tai-depends-other.deb tai.deb
                    fi
                    # In case if you embed script in preferences. gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb & dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb cam be used with.
