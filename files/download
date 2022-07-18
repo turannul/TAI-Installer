@@ -1,9 +1,0 @@
-apt-get download com.randy420.tai --allow-unauthenticated
-apt-get download com.randy420.taidependscoolstar --allow-unauthenticated
-apt-get download com.randy420.taidependsother --allow-unauthenticated
-apt-get download com.randy420.tools --allow-unauthenticated
-
-mv com.randy420.tools_2.3.1_iphoneos-arm.deb 420tools.deb
-mv com.randy420.tai_5.2.0_iphoneos-arm.deb tai.deb 
-mv com.randy420.taidependscoolstar_0.2_iphoneos-arm.deb tai-depends-procursus.deb
-mv com.randy420.taidependsother_0.1_iphoneos-arm.deb tai-depends-other.deb 
