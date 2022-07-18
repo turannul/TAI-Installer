@@ -69,8 +69,8 @@ EOF
                    echo "I suggest you connect to Wi-Fi network before proceeding."
                    sleep 3
 echo ""
-                   echo "Hey seriously, if you don't want mobile data (Less than 500MB) to be used."
-                   sleep 15 #give some time connect to Wi-Fi or option to stop? 
+                   echo "Hey seriously, if you don't want mobile data (less than ~300MB) to be used."
+                   sleep 5
                    #I didn't find a way to determine connection type using bash. if someone knows how to-do please tell me.
 echo ""
 echo ""
@@ -83,35 +83,42 @@ echo ""
 echo ""
 echo ""
                    echo "Checking for wget..."
+echo ""
                    if test ! "$(which wget)"; then
                    echo "wget is not found, Installing now..."
                    apt install wget -y
                    fi
 echo ""
                    echo "Checking for deb files..."
+echo ""
                    if [ ! -f "$deb1" ]; then
                    echo "$deb1 was not found, Downloading..."
-                   wget -q --show-progress $deb1down
+                   wget -nc -q --show-progress $deb1down
+echo ""
                    if [ ! -f "$deb4" ]; then
                    echo "$deb4 was not found, Downloading..."
-                   wget -q --show-progress $deb4down
+                   wget -nc -q --show-progress $deb4down
 
 echo ""
 echo ""
                    if test -f "$procursus" ; then
-                   echo $(tput setaf 190)"Should install from Procursus" $(tput setaf 2)
+                   (tput setaf 6)
+                   echo "Should install from Procursus" 
+                   (tput setaf 2)
+echo ""
                    if [ ! -f "$deb3" ]; then
                    echo "$deb3 was not found, Downloading..."
-                   wget -q --show-progress $deb3down 
+                   wget -nc -q --show-progress $deb3down 
                    dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
                    # gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
 
                    else 
-
-                   echo $(tput setaf 190)"Should install from Bingner" $(tput setaf 2)
+                   (tput setaf 6)
+                   echo "Should install from Bingner" 
+                   (tput setaf 2)
                    if [ ! -f "$deb2" ]; then
                    echo "$deb2 was not found, Downloading..."
-                   wget -q --show-progress $deb2down 
+                   wget -nc -q --show-progress $deb2down 
                    dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
                    # gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
                    fi   fi
