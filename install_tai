@@ -162,7 +162,7 @@ echo ""
                    #gap /usr/bin/apt install wget -y
                    fi
 echo ""
-                   echo "Checking for deb files...\n"
+                   echo -e "Checking for deb files...\n"
 
                    if [ ! -f "$deb1" ]; then
                    echo "$deb1 was not found, Downloading..."
@@ -204,9 +204,10 @@ echo ""
                    #gap /usr/bin/dpkg --configure -a
                    dpkg --configure -a
                    #Just to make sure everything is configured.
+echo ""
                    echo -e "Cleaning up...\n"
                    rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
                    killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
-                   echo -e "We are done.\n"
+                   echo "We are done."
                    exit 0
 fi
