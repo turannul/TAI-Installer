@@ -72,11 +72,11 @@ else
                   #================================================
 #Part of uptime2 
 #Used for nothing just show can be removed.
-B='\033[0;30m'            #Black
-LR='\033[1;31m'           #Red 
-LG='\033[1;32m'           #Green
-P='\033[0;35m'            #Purple 
-NC='\033[0m'              #Default shell colour
+B='\033[0;30m'         #Black#?
+LR='\033[1;31m'        #Red 
+LG='\033[1;32m'        #Green
+P='\033[0;35m'         #Purple 
+NC='\033[0m'           #Default shell colour
 
 iosv="$(sw_vers -productVersion)"
 
@@ -98,7 +98,7 @@ jb="$(tput setab 0;)${P}Odysseyra1n"
 else
 jbd=/.installed_unc0ver
 if test -f "$jbd"; then  
-jb="${B}$(tput setab 7;)unc0ver"
+jb="$(tput setaf 0;)$(tput setab 7;)unc0ver"
 else
 jbd=/.bootstrapped
 if test -f "$jbd"; then
