@@ -1,215 +1,215 @@
 #! /bin/bash
 
 run="$(export | grep TERM_PROGRAM)"
-#deb versions 
-#420 Tools : v2.3.1
+#deb versions	#420 Tools : v2.3.1
 #TAI CStar : v0.2
 #TAI Other : v0.1
-#TAI Inst  : v5.2.0    
+#TAI Inst  : v5.2.0
+
+B='\033[0;30m'				#Black
+LR='\033[1;31m'			#Red	LG='\033[1;32m'			#Green
+P='\033[0;35m'				#Purple	NC='\033[0m'				#Default shell colour
+
+while getopts ":~" opt; do
+	case ${opt} in
+		~ ) # process option h
+			B=''				#Black
+			LR=''			#Red				LG=''			#Green
+			P=''				#Purple				NC=''				#Default shell colour
+			settings=1
+	;;
+	esac
+done
+
 procursus=(/.procursus_strapped)
-deb1=(420Tools.deb)     deb1down=(https://turannul.github.io/TAI-Installer/Files/420Tools.deb)
-deb2=(TAI_Other.deb)    deb2down=(https://turannul.github.io/TAI-Installer/Files/TAI_Other.deb)
-deb3=(TAI_CStar.deb)    deb3down=(https://turannul.github.io/TAI-Installer/Files/TAI_CStar.deb)
-deb4=(TAI.deb)          deb4down=(https://turannul.github.io/TAI-Installer/Files/TAI.deb)
+deb1=(420Tools.deb)	deb1down=(https://turannul.github.io/TAI-Installer/Files/420Tools.deb)
+deb2=(TAI_Other.deb)	deb2down=(https://turannul.github.io/TAI-Installer/Files/TAI_Other.deb)
+deb3=(TAI_CStar.deb)	deb3down=(https://turannul.github.io/TAI-Installer/Files/TAI_CStar.deb)
+deb4=(TAI.deb)			deb4down=(https://turannul.github.io/TAI-Installer/Files/TAI.deb)
 
-if [[ $run == "1" ]]; #Run only returns a value on NewTerm or mTerm & SSH Terminals.
-then 
-    echo -e "Checking for wget...\n"
+if [[ $run == "1" ]]; then #Run only returns a value on NewTerm or mTerm & SSH Terminals.		echo -e "Checking for wget...\n"
 
-                   if test ! "$(which wget)"; then
-                   echo -e "wget is not found, Installing now...\n"
-                   apt install wget -y
-                   #gap /usr/bin/apt install wget -y
-                   else 
-                   echo -e "wget is installed,continuing... \n"
-                   fi
+	if test ! "$(which wget)"; then
+		echo -e "wget is not found, Installing now...\n"
+		apt install wget -y
+		#gap /usr/bin/apt install wget -y
+	else			echo -e "wget is installed,continuing... \n"
+	fi
 
-                   echo "Checking for deb files...\n"
+	echo "Checking for deb files...\n"
 
-                   if [ ! -f "$deb1" ]; then
-                   echo "$deb1 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb1down
-echo ""
-                   if [ ! -f "$deb4" ]; then
-                   echo "$deb4 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb4down
-echo ""
-echo ""
-                   if test -f "$procursus" ; then
-                   echo -e "Should install from Procursus\n" 
+	if [ ! -f "$deb1" ]; then
+		echo "$deb1 was not found, Downloading..."
+		wget -nc -q --show-progress $deb1down
+		echo ""
+		if [ ! -f "$deb4" ]; then
+			echo "$deb4 was not found, Downloading..."
+			wget -nc -q --show-progress $deb4down
+			echo ""
+			echo ""
+			if test -f "$procursus" ; then
+				echo -e "Should install from Procursus\n"	
+				if [ ! -f "$deb3" ]; then
+					echo "$deb3 was not found, Downloading..."
+					wget -nc -q --show-progress $deb3down						dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+					#gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
 
-                   if [ ! -f "$deb3" ]; then
-                   echo "$deb3 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb3down 
-                   dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
-                   #gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+				else
+					echo "Should install from Bingner"						if [ ! -f "$deb2" ]; then
+						echo "$deb2 was not found, Downloading..."
+						wget -nc -q --show-progress $deb2down							dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+						#gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+					fi
+				fi
+			fi
+		fi		fi	#I love doing this
 
-                   else 
-                   echo "Should install from Bingner" 
-                   if [ ! -f "$deb2" ]; then
-                   echo "$deb2 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb2down 
-                   dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
-                   #gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
-                   fi   fi
-                    fi fi 
-                     fi   #I love doing this                      
-
-echo ""
-                   #To install depends.
-                   apt --fix-broken install -y --allow-unauthenticated
-                   #gap /usr/bin/apt --fix-broken install -y --allow-unauthenticated
-                   #gap /usr/bin/dpkg --configure -a
-                   dpkg --configure -a
-                   #Just to make sure everything is configured.
-                   echo -e "Cleaning up...\n"
-                   rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
-                   killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
-                   echo -e "We are done.\n"
-                   exit 0
+	echo ""
+	#To install depends.
+	apt --fix-broken install -y --allow-unauthenticated
+	#gap /usr/bin/apt --fix-broken install -y --allow-unauthenticated
+	#gap /usr/bin/dpkg --configure -a
+	dpkg --configure -a
+	#Just to make sure everything is configured.
+	echo -e "Cleaning up...\n"
+	rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
+	killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
+	echo -e "We are done.\n"
+	exit 0
 else
-                   #Terminal part 
-                  #================================================
-#Part of uptime2 
-#Used for nothing just show can be removed.
-B='\033[0;30m'         #Black#?
-LR='\033[1;31m'        #Red 
-LG='\033[1;32m'        #Green
-P='\033[0;35m'         #Purple 
-NC='\033[0m'           #Default shell colour
+	#Terminal part		#================================================
+	#Part of uptime2		#Used for nothing just show can be removed.
+	B='\033[0;30m'				#Black
+	LR='\033[1;31m'			#Red		LG='\033[1;32m'			#Green
+	P='\033[0;35m'				#Purple		NC='\033[0m'				#Default shell colour
 
-iosv="$(sw_vers -productVersion)"
+	iosv="$(sw_vers -productVersion)"
 
-jbd=/private/var/jb/cheyote
-if test -d "$jbd"; then
-jb=$(tput setaf 5;)"Cheyote"
-else
-jbd=/taurine
-if test -d "$jbd"; then
-jb=$(tput setaf 5;)"Taurine"
-else
-jbd=/odyssey
-if test -d "$jbd";then  
-jb="${P}Odyssey" 
-else
-jbd=/.installed_odyssey
-if test -f "$jbd"; then  
-jb="$(tput setab 0;)${P}Odysseyra1n" 
-else
-jbd=/.installed_unc0ver
-if test -f "$jbd"; then  
-jb="$(tput setaf 0;)$(tput setab 7;)unc0ver"
-else
-jbd=/.bootstrapped
-if test -f "$jbd"; then
-jb="$(tput setaf 7;)$(tput setab 0;)checkra1n"
-else
-jb="${LR}Unknown Jailbreak?"
-fi fi  
-fi fi
-fi fi 
+	jbd=/private/var/jb/cheyote
+	if test -d "$jbd"; then
+		jb=$(tput setaf 5;)"Cheyote"
+	else
+		jbd=/taurine
+		if test -d "$jbd"; then
+			jb=$(tput setaf 5;)"Taurine"
+		else
+			jbd=/odyssey
+			if test -d "$jbd";then 					jb="${P}Odyssey"				else
+				jbd=/.installed_odyssey
+				if test -f "$jbd"; then 						jb="$(tput setab 0;)${P}Odysseyra1n"					else
+					jbd=/.installed_unc0ver
+					if test -f "$jbd"; then
+						jb="${B}$(tput setab 7;)unc0ver"
+					else
+						jbd=/.bootstrapped
+						if test -f "$jbd"; then
+							jb="$(tput setaf 7;)$(tput setab 0;)checkra1n"
+						else
+							jb="${LR}Unknown Jailbreak?"
+						fi
+					fi
+				fi
+			fi
+		fi
+	fi
+#========================================
+	if [[ $jb == "Cheyote" ]]; then
+		echo "${LR} iOS 15 not supported at this moment "
+		exit
+	fi
+#========================================
 
-#================================================
-   if [[ $jb == "Cheyote" ]];
-   then
-    echo "${LR} iOS 15 not supported at this moment "
-  exit 
-fi
-#================================================
+	(tput setab 0)
+	(tput setaf 2)
+	clear
 
-(tput setab 0)
-(tput setaf 2)
-clear
-                   
-                   if [[ "$EUID" -ne 0 ]]; then
-                   echo "TAI Installer needs to be run with root privileges."
-                   exit
-                   fi
-    
+	if [[ "$EUID" -ne 0 ]]; then
+		echo "TAI Installer needs to be run with root privileges."
+		exit
+	fi
+
 cat << EOF
- _____  _    ___ 
-|_   _|/ \  |_ _|
-  | | / _ \  | | 
-  | |/ ___ \ | | 
-  |_/_/   \_\___|  
+ _____  _     ___ 
+|_   _|/ \   |_ _|
+  | | / _ \   | | 
+  | |/ ___ \  | | 
+  |_/_/   \_\____|  
 
  ___           _        _ _           
 |_ _|_ __  ___| |_ __ _| | | ___ _ __ 
  | ||  _ \/ __| __/ _  | | |/ _ \  __|
  | || | | \__ \ || (_| | | |  __/ |   
-|___|_| |_|___/\__\__ _|_|_|\___|_|                                        
+|___|_| |_|___/\__\__ _|_|_|\___|_|   
 
 EOF
 
-                   echo -e "I suggest you connect to Wi-Fi network before proceeding.\n"
-                   sleep 3
+	echo -e "I suggest you connect to Wi-Fi network before proceeding.\n"
+	sleep 3
 
-                   echo -e "Hey seriously, if you don't want mobile data (less than ~300MB) to be used.\n"
-                   sleep 5
-                   #I didn't find a way to determine connection type using bash. if someone knows how to-do please tell me.
-echo ""
-                   #================================================
-                   echo "iOS Version: $iosv"
-                   echo "Jailbreak: $jb"
-                   (tput setab 0)
-                   (tput setaf 2)
-                   #================================================
-echo ""
-echo ""
-                   echo -e "Checking for wget...\n"
+	echo -e "Hey seriously, if you don't want mobile data (less than ~300MB) to be used.\n"
+	sleep 5
+	#I didn't find a way to determine connection type using bash. if someone knows how to-do please tell me.
+	echo ""
+#========================================
+	echo "iOS Version: $iosv"
+	echo "Jailbreak: $jb"
+	(tput setab 0)
+	(tput setaf 2)
+#========================================
+	echo ""
+	echo ""
+	echo -e "Checking for wget...\n"
 
-                   if test ! "$(which wget)"; then
-                   echo "wget is not found, Installing now..."
-                   apt install wget -y
-                   #gap /usr/bin/apt install wget -y
-                   fi
-echo ""
-                   echo -e "Checking for deb files...\n"
+	if test ! "$(which wget)"; then
+		echo "wget is not found, Installing now..."
+		apt install wget -y
+		#gap /usr/bin/apt install wget -y
+	fi
+	echo ""
+	echo -e "Checking for deb files...\n"
 
-                   if [ ! -f "$deb1" ]; then
-                   echo "$deb1 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb1down
-echo ""
-                   if [ ! -f "$deb4" ]; then
-                   echo "$deb4 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb4down
-echo ""
-echo ""
-                   if test -f "$procursus" ; then
-                   (tput setaf 6)
-                   echo -e "Should install from Procursus\n" 
-                   (tput setaf 2)
+	if [ ! -f "$deb1" ]; then
+		echo "$deb1 was not found, Downloading..."
+		wget -nc -q --show-progress $deb1down
+		echo ""
+		if [ ! -f "$deb4" ]; then
+			echo "$deb4 was not found, Downloading..."
+			wget -nc -q --show-progress $deb4down
+			echo ""
+			echo ""
+			if test -f "$procursus" ; then
+				(tput setaf 6)
+				echo -e "Should install from Procursus\n"	(tput setaf 2)
 
-                   if [ ! -f "$deb3" ]; then
-                   echo "$deb3 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb3down 
-                   dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
-                   #gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+				if [ ! -f "$deb3" ]; then
+					echo "$deb3 was not found, Downloading..."
+					wget -nc -q --show-progress $deb3down							dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+					#gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
 
-                   else 
-                   (tput setaf 6)
-                   echo "Should install from Bingner" 
-                   (tput setaf 2)
-                   if [ ! -f "$deb2" ]; then
-                   echo "$deb2 was not found, Downloading..."
-                   wget -nc -q --show-progress $deb2down 
-                   dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
-                   #gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
-                   fi   fi
-                    fi fi 
-                     fi   #I love doing this                      
+				else
+					(tput setaf 6)
+					echo "Should install from Bingner"			(tput setaf 2)
+					if [ ! -f "$deb2" ]; then
+						echo "$deb2 was not found, Downloading..."
+						wget -nc -q --show-progress $deb2down							dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+						#gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+					fi
+				fi
+			fi
+		fi
+	fi	#I love doing this
 
-echo ""
-                   #To install depends.
-                   apt --fix-broken install -y --allow-unauthenticated
-                   #gap /usr/bin/apt --fix-broken install -y --allow-unauthenticated
-                   #gap /usr/bin/dpkg --configure -a
-                   dpkg --configure -a
-                   #Just to make sure everything is configured.
-echo ""
-                   echo -e "Cleaning up...\n"
-                   rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
-                   killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
-                   echo "We are done."
-                   exit 0
+	echo ""
+	#To install depends.
+	apt --fix-broken install -y --allow-unauthenticated
+	#gap /usr/bin/apt --fix-broken install -y --allow-unauthenticated
+	#gap /usr/bin/dpkg --configure -a
+	dpkg --configure -a
+	#Just to make sure everything is configured.
+	echo ""
+	echo -e "Cleaning up...\n"
+	rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
+	killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
+	echo "We are done."
+	exit 0
 fi
