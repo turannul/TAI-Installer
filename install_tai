@@ -17,11 +17,13 @@ then
     echo -e "Checking for wget...\n"
 
                    if test ! "$(which wget)"; then
-                   echo "wget is not found, Installing now..."
+                   echo -e "wget is not found, Installing now...\n"
                    apt install wget -y
                    #gap /usr/bin/apt install wget -y
+                   else 
+                   echo -e "wget is installed,continuing... \n"
                    fi
-echo ""
+
                    echo "Checking for deb files...\n"
 
                    if [ ! -f "$deb1" ]; then
