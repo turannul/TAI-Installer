@@ -12,7 +12,7 @@ deb2=(TAI_Other.deb)    deb2down=(https://turannul.github.io/TAI-Installer/Files
 deb3=(TAI_CStar.deb)    deb3down=(https://turannul.github.io/TAI-Installer/Files/TAI_CStar.deb)
 deb4=(TAI.deb)          deb4down=(https://turannul.github.io/TAI-Installer/Files/TAI.deb)
 
-if [[ $run == "1" ]]; #Run only returns a value on NewTerm
+if [[ $run == "1" ]]; #Run only returns a value on NewTerm or mTerm & SSH Terminals.
 then 
     echo -e "Checking for wget...\n"
 
