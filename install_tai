@@ -38,7 +38,7 @@ deb3down=(https://turannul.github.io/TAI-Installer/Files/TAI_CStar.deb)
 deb4=(TAI.deb)
 deb4down=(https://turannul.github.io/TAI-Installer/Files/TAI.deb)
 
-if [[ "$settings" -eq "0" ]]; then
+if [ "$settings" -eq "0" ]; then
 #Terminal part
 #========================================
 	iosv="$(sw_vers -productVersion)"
