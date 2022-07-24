@@ -140,19 +140,22 @@ if [ ! -f "$deb1" ]; then
 		echo ""
 		if test -f "$procursus" ; then
 			(tput setaf 6)
-			echo -e "Should install from Procursus\n"	(tput setaf 2)
+			echo -e "Should install from Procursus\n"	
+			(tput setaf 2)
 
 			if [ ! -f "$deb3" ]; then
 				echo "$deb3 was not found, Downloading..."
-				wget -nc -q --show-progress $deb3down							dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+wget -nc -q --show-progress $deb3down
+dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
 				#gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
 
 			else
 				(tput setaf 6)
-				echo "Should install from Bingner"			(tput setaf 2)
+				echo "Should install from Bingner"			
+				(tput setaf 2)
 				if [ ! -f "$deb2" ]; then
 					echo "$deb2 was not found, Downloading..."
-					wget -nc -q --show-progress $deb2down							dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+wget -nc -q --show-progress $deb2down		dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
 					#gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
 				fi
 			fi
