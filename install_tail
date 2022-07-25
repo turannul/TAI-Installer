@@ -1,5 +1,10 @@
 #! /bin/bash
 
+#deb versions	#420 Tools : v2.3.1
+#TAI CStar : v0.2
+#TAI Other : v0.1
+#TAI Inst  : v5.2.0
+
 B='\033[0;30m'			#Black
 LR='\033[1;31m'			#Red	
 LG='\033[1;32m'			#Green
@@ -9,20 +14,32 @@ settings=0
 
 while getopts ":~" opt; do
 	case ${opt} in
-		"~") # process option h
+		~ ) # process option h
 			B=''			#Black
 			LR=''			#Red
 			LG=''			#Green
 			P=''			#Purple
 			NC=''			#Default shell colour
 			settings=1
-		;;
+	;;
 	esac
 done
 
 procursus=(/.procursus_strapped)
+deb1=(420Tools.deb)
+deb1down=(https://turannul.github.io/TAI-Installer/Files/420Tools.deb)
 
-if [ "$settings" -eq 0 ]; then
+deb2=(TAI_Other.deb)
+deb2down=(https://turannul.github.io/TAI-Installer/Files/TAI_Other.deb)
+
+deb3=(TAI_CStar.deb)
+deb3down=(https://turannul.github.io/TAI-Installer/Files/TAI_CStar.deb)
+
+deb4=(TAI.deb)
+deb4down=(https://turannul.github.io/TAI-Installer/Files/TAI.deb)
+
+if [ "$settings" -eq "0" ]; then
+#Terminal part
 #========================================
 	iosv="$(sw_vers -productVersion)"
 
@@ -84,7 +101,7 @@ EOF
 
 	echo -e "Hey seriously, if you don't want mobile data (less than ~300MB) to be used.\n"
 	sleep 5
-
+	#I didn't find a way to determine connection type using bash. if someone knows how to-do please tell me.
 	echo ""
 #========================================
 	echo "iOS Version: $iosv"
@@ -101,35 +118,61 @@ if [[ "$EUID" -ne 0 ]]; then
 	exit
 fi
 
-echo ""
-echo ""
+echo -e "Checking for wget...\n"
 
-if test -f "$procursus" ; then
-	if [ "$settings" -eq 0 ]; then
-		(tput setaf 6)
-	fi
-	echo -e "Should install from Procursus\n"
-	if [ "$settings" -eq 0 ]; then
-		(tput setaf 2)
-	fi
-	apt install com.randy420.taidependscoolstar -y --allow-unauthenticated
-else
-	if [ "$settings" -eq 0 ]; then
-		(tput setaf 6)
-	fi
-	echo -e "Should install from Bingner\n"
-	if [ "$settings" -eq 0 ]; then
-		(tput setaf 2)
-	fi
-	apt install com.randy420.taidependsother -y --allow-unauthenticated
+if test ! "$(which wget)"; then
+	echo "wget is not found, Installing now..."
+	apt install wget -y
+	#gap /usr/bin/apt install wget -y
 fi
 
 echo ""
+echo -e "Checking for deb files...\n"
 
-#To install TAI.
-#apt install com.randy420.tai -y --allow-unauthenticated
+if [ ! -f "$deb1" ]; then
+	echo "$deb1 was not found, Downloading..."
+	wget -nc -q --show-progress $deb1down
+	echo ""
+	if [ ! -f "$deb4" ]; then
+		echo "$deb4 was not found, Downloading..."
+		wget -nc -q --show-progress $deb4down
+		echo ""
+		echo ""
+		if test -f "$procursus" ; then
+			(tput setaf 6)
+			echo -e "Should install from Procursus\n"	
+			(tput setaf 2)
+
+			if [ ! -f "$deb3" ]; then
+				echo "$deb3 was not found, Downloading..."
+wget -nc -q --show-progress $deb3down
+dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+				#gap /usr/bin/dpkg -i 420tools.deb tai-depends-procursus.deb tai.deb >/dev/null 2>&1
+
+			else
+				(tput setaf 6)
+				echo "Should install from Bingner"			
+				(tput setaf 2)
+				if [ ! -f "$deb2" ]; then
+					echo "$deb2 was not found, Downloading..."
+					wget -nc -q --show-progress $deb2down		dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+					#gap /usr/bin/dpkg -i 420tools.deb tai-depends-other.deb tai.deb >/dev/null 2>&1
+				fi
+			fi
+		fi
+	fi
+fi	#I love doing this
+
+echo ""
+#To install depends.
+apt --fix-broken install -y --allow-unauthenticated
+#gap /usr/bin/apt --fix-broken install -y --allow-unauthenticated
+#gap /usr/bin/dpkg --configure -a
 dpkg --configure -a
 #Just to make sure everything is configured.
 echo ""
+echo -e "Cleaning up...\n"
+rm $deb1 $deb2 $deb3 $deb4 >/dev/null 2>&1
+killall Preferences >/dev/null 2>&1 #Reload settings to appear preferences.
 echo "We are done."
 exit 0
