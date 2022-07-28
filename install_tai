@@ -1,9 +1,9 @@
 #! /bin/bash
 
 #Unused variable.
-B='\x1B[30m'			   #Black
+B='\x1B[30m'				#Black
 LG='\033[1;32m'			#Green
-P='\033[0;35m'			#Purple	
+P='\033[0;35m'			#Purple
 NC='\033[0m'				#Default shell colour
 settings=0
 
@@ -25,31 +25,31 @@ if [ "$settings" -eq 0 ]; then
 #========================================
 	iosv="$(sw_vers -productVersion)"
 
-jbd=/private/var/jb/cheyote
-if test -d "$jbd"; then
-jb=$(tput setaf 5;)"Cheyote"
+	jbd=/private/var/jb/cheyote
+	if test -d "$jbd"; then
+		jb=$(tput setaf 5;)"Cheyote"
 	else
-jbd=/taurine
-if test -d "$jbd"; then
-jb=$(tput setaf 5;)"Taurine"
+		jbd=/taurine
+		if test -d "$jbd"; then
+			jb=$(tput setaf 5;)"Taurine"
 		else
-jbd=/odyssey
-if test -d "$jbd";then 
-jb="$(tput setaf 5;)Odyssey"
+			jbd=/odyssey
+			if test -d "$jbd";then 
+				jb="$(tput setaf 5;)Odyssey"
 			else
-jbd=/.installed_odyssey
-if test -f "$jbd"; then 
-jb="$(tput setab 0;)$(tput setaf 5;)Odysseyra1n"
+				jbd=/.installed_odyssey
+				if test -f "$jbd"; then 
+					jb="$(tput setab 0;)$(tput setaf 5;)Odysseyra1n"
 				else
-jbd=/.installed_unc0ver
-if test -f "$jbd"; then
-jb="$(tput setaf 0;)$(tput setab 7;)unc0ver"
+					jbd=/.installed_unc0ver
+					if test -f "$jbd"; then
+						jb="$(tput setaf 0;)$(tput setab 7;)unc0ver"
 					else
-jbd=/.bootstrapped
-if test -f "$jbd"; then
-jb="$(tput setaf 7;)$(tput setab 0;)checkra1n"
+						jbd=/.bootstrapped
+						if test -f "$jbd"; then
+							jb="$(tput setaf 7;)$(tput setab 0;)checkra1n"
 						else
-jb="$(tput setaf 1;)Unknown Jailbreak?"
+							jb="$(tput setaf 1;)Unknown Jailbreak?"
 						fi
 					fi
 				fi
@@ -58,7 +58,7 @@ jb="$(tput setaf 1;)Unknown Jailbreak?"
 	fi
 #========================================
 	if [[ $iosv -eq 15 ]]; then
-		echo "$(tput setaf	1;) iOS 15 not supported at this moment "
+		echo "$(tput setaf 1;) iOS 15 not supported at this moment "
 		exit
 	fi
 #========================================
@@ -100,7 +100,7 @@ EOF
 fi
 
 if [[ "$EUID" -ne 0 ]]; then
-	echo "$(tput setaf	1;)TAI Installer needs to be run with root privileges."
+	echo "$(tput setaf 1;)TAI Installer needs to be run with root privileges."
 	exit
 fi
 
