@@ -134,24 +134,32 @@ checkRoot
 
 echo ""
 echo ""
+apt-get update >/dev/null 2>&1
 
 if test -f "$procursus" ; then
+	checkInstall "${uncoolstarDepends}" "${uncoolstarVersion}"
+	whatToDo="$?"
 	if [ "$settings" -eq 0 ]; then
 		(tput setaf 6)
 	fi
-	echo -e "Should install from Procursus\n"
-	if [ "$settings" -eq 0 ]; then
-		(tput setaf 2)
-	fi
-
-	checkInstall "${uncoolstarDepends}" "${uncoolstarVersion}"
-	whatToDo="$?"
 
 	if [[ "$whatToDo" == "0" ]]; then
-		echo ""
+		echo -e "Dependencies up to date\n"
+
+		if [ "$settings" -eq 0 ]; then
+			(tput setaf 2)
+		fi
 	elif [[ "$whatToDo" == "1" ]]; then
+		echo -e "Should install from Procursus\n"
+		if [ "$settings" -eq 0 ]; then
+			(tput setaf 2)
+		fi
 		apt install com.randy420.taidependscoolstar -y --allow-unauthenticated
 	else
+		echo -e "Should update from Procursus\n"
+		if [ "$settings" -eq 0 ]; then
+			(tput setaf 2)
+		fi
 		apt upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
 	fi
 else
@@ -159,20 +167,27 @@ else
 		(tput setaf 6)
 	fi
 
-	echo -e "Should install from Bingner\n"
-
-	if [ "$settings" -eq 0 ]; then
-		(tput setaf 2)
-	fi
-
 	checkInstall "${otherDepends}" "${otherVersion}"
 	whatToDo="$?"
 
 	if [[ "$whatToDo" == "0" ]]; then
-		echo ""
+		echo -e "Dependencies up to date\n"
+
+		if [ "$settings" -eq 0 ]; then
+			(tput setaf 2)
+		fi
 	elif [[ "$whatToDo" == "1" ]]; then
+		echo -e "Should install from Bingner\n"
+
+		if [ "$settings" -eq 0 ]; then
+			(tput setaf 2)
+		fi
 		apt install com.randy420.taidependsother -y --allow-unauthenticated
 	else
+		echo -e "Should update from Bingner\n"
+		if [ "$settings" -eq 0 ]; then
+			(tput setaf 2)
+		fi
 		apt upgrade com.randy420.taidependsother -y --allow-unauthenticated
 	fi
 fi
