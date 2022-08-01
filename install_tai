@@ -7,6 +7,37 @@ P='\033[0;35m'			#Purple
 NC='\033[0m'				#Default shell colour
 settings=0
 
+uncoolstarDepends="com.randy420.taidepependscoolstar"
+uncoolstarVersion=0.3
+otherDepends="com.randy420.taidependsother"
+otherVersion=0.1
+
+checkRoot(){
+	if [[ "$EUID" -ne 0 ]]; then
+		echo "$(tput setaf 1;)TAI Installer needs to be run with root privileges."
+		exit
+	fi
+}
+
+checkInstall(){
+	Depends="$1"
+	shift 1
+	Version="$1"
+
+	installedVersion=$(apt list --installed 2>/dev/null | grep -w $Depends | sed 's/randy420//g' | sed 's/[^0-9]*//g' | sed -r 's/(.{1})/\1./g' |  sed 's/.$//')
+
+	if [[ "$installedVersion" == "$Version" ]]; then
+		echo -e "${LG}dependencies up to date${NC}\n"
+		return 0
+	elif [[ "$installedVersion" == "" ]]; then
+		echo -e "${P}Should install dependencies${NC}\n"
+		return 1
+	else
+		echo -e "${P}Should upgrade dependencies${NC}\n"
+		return 2
+	fi
+}
+
 while getopts ":~" opt; do
 	case ${opt} in
 		"~") # process option h
@@ -99,10 +130,7 @@ EOF
 	echo ""
 fi
 
-if [[ "$EUID" -ne 0 ]]; then
-	echo "$(tput setaf 1;)TAI Installer needs to be run with root privileges."
-	exit
-fi
+checkRoot
 
 echo ""
 echo ""
@@ -115,16 +143,38 @@ if test -f "$procursus" ; then
 	if [ "$settings" -eq 0 ]; then
 		(tput setaf 2)
 	fi
-	apt install com.randy420.taidependscoolstar -y --allow-unauthenticated
+
+	checkInstall "${uncoolstarDepends}" "${uncoolstarVersion}"
+	whatToDo="$?"
+
+	if [[ "$whatToDo" == "0" ]]; then
+		echo ""
+	elif [[ "$whatToDo" == "1" ]]; then
+		apt install com.randy420.taidependscoolstar -y --allow-unauthenticated
+	else
+		apt upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
+	fi
 else
 	if [ "$settings" -eq 0 ]; then
 		(tput setaf 6)
 	fi
+
 	echo -e "Should install from Bingner\n"
+
 	if [ "$settings" -eq 0 ]; then
 		(tput setaf 2)
 	fi
-	apt install com.randy420.taidependsother -y --allow-unauthenticated
+
+	checkInstall "${otherDepends}" "${otherVersion}"
+	whatToDo="$?"
+
+	if [[ "$whatToDo" == "0" ]]; then
+		echo ""
+	elif [[ "$whatToDo" == "1" ]]; then
+		apt install com.randy420.taidependsother -y --allow-unauthenticated
+	else
+		apt upgrade com.randy420.taidependsother -y --allow-unauthenticated
+	fi
 fi
 
 echo ""
