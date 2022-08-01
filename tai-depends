@@ -27,7 +27,7 @@ checkInstall(){
 	installedVersion=$(apt list --installed 2>/dev/null | grep -w $Depends | sed 's/randy420//g' | sed 's/[^0-9]*//g' | sed -r 's/(.{1})/\1./g' |  sed 's/.$//')
 
 	if [[ "$installedVersion" == "$Version" ]]; then
-		echo -e "${LG}dependencies up to date${NC}\n"
+		echo -e "${LG}Dependencies up to date${NC}\n"
 		return 0
 	elif [[ "$installedVersion" == "" ]]; then
 		echo -e "${P}Should install dependencies${NC}\n"
