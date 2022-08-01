@@ -7,8 +7,8 @@ P='\033[0;35m'			#Purple
 NC='\033[0m'				#Default shell colour
 settings=0
 
-uncoolstarDepends="com.randy420.taidepependscoolstar"
-uncoolstarVersion=0.3
+uncoolstarDepends="com.randy420.taidependscoolstar"
+uncoolstarVersion=0.2
 otherDepends="com.randy420.taidependsother"
 otherVersion=0.1
 
