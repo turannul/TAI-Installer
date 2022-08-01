@@ -150,9 +150,9 @@ if test -f "$procursus" ; then
 	if [[ "$whatToDo" == "0" ]]; then
 		echo ""
 	elif [[ "$whatToDo" == "1" ]]; then
-		apt install com.randy420.taidependscoolstar -y --allow-unauthenticated
+		apt-get install com.randy420.taidependscoolstar -y --allow-unauthenticated
 	else
-		apt upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
+		apt-get upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
 	fi
 else
 	if [ "$settings" -eq 0 ]; then
@@ -171,9 +171,9 @@ else
 	if [[ "$whatToDo" == "0" ]]; then
 		echo ""
 	elif [[ "$whatToDo" == "1" ]]; then
-		apt install com.randy420.taidependsother -y --allow-unauthenticated
+		apt-get install com.randy420.taidependsother -y --allow-unauthenticated
 	else
-		apt upgrade com.randy420.taidependsother -y --allow-unauthenticated
+		apt-get upgrade com.randy420.taidependsother -y --allow-unauthenticated
 	fi
 fi
 

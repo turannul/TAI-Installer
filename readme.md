@@ -1,3 +1,6 @@
-#TAI Installer Installer(?) Script
+#TAI Depends Installer Script
 
-#Usage: Simple sudo ./install_tai OR su root after ./install_tai
+#Usage: 
+sudo ./install_depends 
+OR 
+su root  ./install_depends
