@@ -157,7 +157,7 @@ if test -f "$procursus" ; then
 	whatToDo="$?"
 
 	if [[ "$whatToDo" == "0" ]]; then
-		echo -e "Dependencies up to date\n"
+		echo -e "\n"
 	elif [[ "$whatToDo" == "1" ]]; then
 		whatsHappening "Should install from Procursus" "install" "com.randy420.taidependscoolstar"
 		#apt-get install com.randy420.taidependscoolstar -y --allow-unauthenticated
@@ -170,7 +170,7 @@ else
 	whatToDo="$?"
 
 	if [[ "$whatToDo" == "0" ]]; then
-		echo -e "Dependencies up to date\n"
+		echo -e "\n"
 	elif [[ "$whatToDo" == "1" ]]; then
 		whatsHappening "Should install from Bingner" "install" "com.randy420.taidependsother"
 		#apt-get install com.randy420.taidependsother -y --allow-unauthenticated
