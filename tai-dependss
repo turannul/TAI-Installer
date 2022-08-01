@@ -150,6 +150,7 @@ if test -f "$procursus" ; then
 			(tput setaf 2)
 		fi
 	elif [[ "$whatToDo" == "1" ]]; then
+<<<<<<< HEAD
 		echo -e "Should install from Procursus\n"
 		if [ "$settings" -eq 0 ]; then
 			(tput setaf 2)
@@ -161,6 +162,11 @@ if test -f "$procursus" ; then
 			(tput setaf 2)
 		fi
 		apt upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
+=======
+		apt-get install com.randy420.taidependscoolstar -y --allow-unauthenticated
+	else
+		apt-get upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
+>>>>>>> 6e58c52a6fd1e619b2e42e1cf053ad52fad50c0d
 	fi
 else
 	if [ "$settings" -eq 0 ]; then
@@ -177,6 +183,7 @@ else
 			(tput setaf 2)
 		fi
 	elif [[ "$whatToDo" == "1" ]]; then
+<<<<<<< HEAD
 		echo -e "Should install from Bingner\n"
 
 		if [ "$settings" -eq 0 ]; then
@@ -189,6 +196,11 @@ else
 			(tput setaf 2)
 		fi
 		apt upgrade com.randy420.taidependsother -y --allow-unauthenticated
+=======
+		apt-get install com.randy420.taidependsother -y --allow-unauthenticated
+	else
+		apt-get upgrade com.randy420.taidependsother -y --allow-unauthenticated
+>>>>>>> 6e58c52a6fd1e619b2e42e1cf053ad52fad50c0d
 	fi
 fi
 
