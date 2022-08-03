@@ -7,8 +7,8 @@ P='\033[0;35m'			#Purple
 NC='\033[0m'				#Default shell colour
 settings=0
 
-uncoolstarDepends="com.randy420.taidepependscoolstar"
-uncoolstarVersion=0.3
+uncoolstarDepends="com.randy420.taidependscoolstar"
+uncoolstarVersion=0.2
 otherDepends="com.randy420.taidependsother"
 otherVersion=0.1
 
@@ -159,11 +159,9 @@ if test -f "$procursus" ; then
 	if [[ "$whatToDo" == "0" ]]; then
 		echo -e "\n"
 	elif [[ "$whatToDo" == "1" ]]; then
-		whatsHappening "Should install from Procursus" "install" "com.randy420.taidependscoolstar"
-		#apt-get install com.randy420.taidependscoolstar -y --allow-unauthenticated
+		whatsHappening "Should install from Procursus" "install" "${uncoolstarDepends}"
 	else
-		whatsHappening "Should update from Procursus" "upgrade" "com.randy420.taidependscoolstar"
-		#apt-get upgrade com.randy420.taidependscoolstar -y --allow-unauthenticated
+		whatsHappening "Should update from Procursus" "upgrade" "${uncoolstarDepends}"
 	fi
 else
 	checkInstall "${otherDepends}" "${otherVersion}"
@@ -172,11 +170,9 @@ else
 	if [[ "$whatToDo" == "0" ]]; then
 		echo -e "\n"
 	elif [[ "$whatToDo" == "1" ]]; then
-		whatsHappening "Should install from Bingner" "install" "com.randy420.taidependsother"
-		#apt-get install com.randy420.taidependsother -y --allow-unauthenticated
+		whatsHappening "Should install from Bingner" "install" "${otherDepends}"
 	else
-		whatsHappening "Should update from Bingner" "upgrade" "com.randy420.taidependsother"
-		#apt-get upgrade com.randy420.taidependsother -y --allow-unauthenticated
+		whatsHappening "Should update from Bingner" "upgrade" "${otherDepends}"
 	fi
 fi
 
