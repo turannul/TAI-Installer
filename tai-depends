@@ -51,6 +51,11 @@ whatsHappening(){
 	echo -e "${wagwan}\n"
 	if [ "$settings" -eq 0 ]; then
 		(tput setaf 2)
+		echo -e "I suggest you connect to Wi-Fi network before proceeding.\n"
+		sleep 3
+
+		echo -e "Hey seriously, if you don't want mobile data (less than ~300MB) to be used.\n"
+		sleep 5
 	fi
 
 	apt-get ${installType} ${package} -y --allow-unauthenticated
@@ -129,12 +134,6 @@ cat << EOF
 |___|_| |_|___/\__\__ _|_|_|\___|_|   
 
 EOF
-
-	echo -e "I suggest you connect to Wi-Fi network before proceeding.\n"
-	sleep 3
-
-	echo -e "Hey seriously, if you don't want mobile data (less than ~300MB) to be used.\n"
-	sleep 5
 
 	echo ""
 #========================================
