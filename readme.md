@@ -1,6 +1,7 @@
 #TAI Depends Installer Script
 
 #Usage: 
-sudo ./install_depends 
-OR 
-su root  ./install_depends
+If TAI is not installed
+`wget -q -O - https://turannul.github.io/TAI-Installer/tai-depends | sudo bash`
+If TAI is installed
+`sudo ./install_depends`
