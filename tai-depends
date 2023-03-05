@@ -24,7 +24,7 @@ checkInstall(){
 	shift 1
 	Version="$1"
 
-	installedVersion=$(apt list --installed 2>/dev/null | grep -w $Depends | sed 's/randy420//g' | sed 's/[^0-9]*//g' | sed -r 's/(.{1})/\1./g' |  sed 's/.$//')
+	installedVersion=$(apt list --installed 2>/dev/null | grep -w "$Depends" | sed 's/randy420//g' | sed 's/[^0-9]*//g' | sed -r 's/(.{1})/\1./g' |  sed 's/.$//')
 
 	if [[ "$installedVersion" == "$Version" ]]; then
 		echo -e "${LG}Dependencies up to date${NC}\n"
@@ -58,7 +58,7 @@ whatsHappening(){
 		sleep 5
 	fi
 
-	apt-get ${installType} ${package} -y --allow-unauthenticated
+	apt-get "${installType}" "${package}" -y --allow-unauthenticated
 }
 while getopts ":~" opt; do
 	case ${opt} in
@@ -110,8 +110,8 @@ if [ "$settings" -eq 0 ]; then
 		fi
 	fi
 #========================================
-	if [[ $iosv -eq 15 ]]; then
-		echo "$(tput setaf 1;) iOS 15 not supported at this moment "
+	if [[ $iosv -eq 17 ]]; then
+		echo "$(tput setaf 1;) iOS 17 not supported at this moment "
 		exit
 	fi
 #========================================
@@ -135,7 +135,7 @@ cat << EOF
 
 EOF
 
-echo -e "\nTheos Dependency Installer:\nWritten by: Turann and Randy420\n"
+echo -e "\nTheos Dependency Installer:\nWritten by: Turann_ and Randy420\n"
 
 #========================================
 	echo "iOS Version: $iosv"
@@ -150,8 +150,16 @@ fi
 checkRoot
 
 if test -f "$procursus" ; then
-	checkInstall "${uncoolstarDepends}" "${uncoolstarVersion}"
-	whatToDo="$?"
+	# Handling wrong package.
+    if dpkg -s $otherDepends >/dev/null 2>&1; then # If other deb is installed, remove it.
+        echo "Removing dependent: $otherDepends" # Tell to user this shouldn't be here.
+        apt-get remove $otherDepends -y # 3 2 1... Action Remove wrong package
+		apt-get autoremove -y # Remove packages which comes from wrong package
+		dpkg --configure -a # Installing wrong package likely leaves dpkg in a bad state, so we fix it.
+    fi
+
+    checkInstall "${uncoolstarDepends}" "${uncoolstarVersion}"
+    whatToDo="$?"
 
 	if [[ "$whatToDo" == "0" ]]; then
 		echo -e "\n"
@@ -161,8 +169,15 @@ if test -f "$procursus" ; then
 		whatsHappening "Should update from Procursus" "upgrade" "${uncoolstarDepends}"
 	fi
 else
-	checkInstall "${otherDepends}" "${otherVersion}"
-	whatToDo="$?"
+    if dpkg -s $uncoolstarDepends >/dev/null 2>&1; then # If Coolstar deb is installed, remove it.
+        echo "Wrong Package installed, Uninstalling: $uncoolstarDepends" # Tell to user this shouldn't be here. 
+        apt-get remove $uncoolstarDepends -y # 3 2 1... Action Remove wrong package
+		apt-get autoremove -y # Remove packages which comes from wrong package
+		dpkg --configure -a # Installing wrong package likely leaves dpkg in a bad state, so we fix it.
+    fi
+
+    checkInstall "${otherDepends}" "${otherVersion}"
+    whatToDo="$?"
 
 	if [[ "$whatToDo" == "0" ]]; then
 		echo -e "\n"
@@ -180,5 +195,5 @@ echo ""
 dpkg --configure -a
 #Just to make sure everything is configured.
 echo ""
-echo "We are done."
+echo "We are done. Procceding to installing theos."
 exit 0
