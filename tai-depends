@@ -7,6 +7,7 @@ P='\033[0;35m'			#Purple
 NC='\033[0m'				#Default shell colour
 settings=0
 
+TAI="com.randy420.tai"
 uncoolstarDepends="com.randy420.taidependscoolstar"
 uncoolstarVersion=0.4
 otherDepends="com.randy420.taidependsother"
@@ -192,8 +193,22 @@ echo ""
 
 #To install TAI.
 #apt install com.randy420.tai -y --allow-unauthenticated
-dpkg --configure -a
-#Just to make sure everything is configured.
 echo ""
-echo "We are done. Procceding to installing theos."
+if dpkg -s $TAI >/dev/null 2>&1; then
+    echo -e "We are done here. \nProceeding to installing theos step."
+	else
+    read -rp "You don't have TAI installed. Do you want to install it? (y/n) " installTAI
+    case $(echo "$installTAI" | tr '[:upper:]' '[:lower:]') in
+        [yY]) apt-get install com.randy420.tai -y --allow-unauthenticated
+            echo -e "We are done here. \nProceeding to installing theos step."
+            ;;
+        *) 
+			echo -e "Oh so you don't want to install TAI? \nWell, you can install anytime you want."
+            exit 0
+            ;;
+    esac
+fi
+
+#Just to make sure everything is configured.
+dpkg --configure -a
 exit 0
