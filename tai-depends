@@ -1,5 +1,13 @@
 #! /bin/bash
 
+# Block running on unsupported devices (i.e. Macs, Windows and Linux PCs)
+if [[ "$(arch)" == "i386" || "$(arch)" == "x86_64" ]]; then
+	echo "This script only supports Jailbroken iOS devices."
+elif [[ "$(uname -p)" == "arm" ]]; then # Apple Silicon Mac check
+	echo "This script only supports Jailbroken iOS devices."
+	exit 1
+fi
+
 #Unused variable.
 B='\x1B[30m'				#Black
 LG='\033[1;32m'			#Green
