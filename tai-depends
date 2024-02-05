@@ -1,52 +1,101 @@
 #! /bin/bash
-
 # Block running on unsupported devices (i.e. Macs, Windows and Linux PCs)
-if [[ "$(arch)" == "i386" || "$(arch)" == "x86_64" ]]; then
+if [[ "$(uname -m)" =~ iPhone|iPad ]]; then
+	echo -e "Wut the hail?"
+else
 	echo "This script only supports Jailbroken iOS devices."
-elif [[ "$(uname -p)" == "arm" ]]; then # Apple Silicon Mac check
-	echo "This script only supports Jailbroken iOS devices."
-	exit 1
+	exit 1 # Unsupported
 fi
-
-#Unused variable.
-B='\x1B[30m'				#Black
-LG='\033[1;32m'			#Green
-P='\033[0;35m'			#Purple
-NC='\033[0m'				#Default shell colour
+#========================================
+BlackText='\x1B[30m'		# Black
+WhiteText='\033[97m'        # White
+GreenText='\033[1;32m'      # Green
+RedText='\033[1;31m'        # Red
+YellowText='\033[1;33m'     # Yellow
+PinkText='\033[38;5;200m'   # Pink 
+BlackBG='\033[48;5;0m'      # Black Background
+WhiteBG='\033[48;5;15m'     # White Background
+NC='\033[0m'       		    # Reset Color Style
+#========================================
 settings=0
-
 TAI="com.randy420.tai"
 uncoolstarDepends="com.randy420.taidependscoolstar"
-uncoolstarVersion=0.4
 otherDepends="com.randy420.taidependsother"
+uncoolstarVersion=0.4
 otherVersion=0.3
-
+#========================================
+AFFIRMATIVE=("Y" "y" "YES" "yes" "TRUE" "true")
+Procursus_Rootful=False
+Procursus_Rootless=False
+Bingner=False
+#========================================
 checkRoot(){
 	if [[ "$EUID" -ne 0 ]]; then
-		echo "$(tput setaf 1;)TAI Installer needs to be run with root privileges."
-		exit
+		echo "${RedText}TAI Installer needs to be run with root privileges."
+		exit 2 # No root
 	fi
 }
-
+#========================================
+installTAI(){
+	echo -e "${YellowText}It seems like TAI is not installed.${NC}"
+	read -rp "Want to install theos? [y/n] " answer
+        if [[ ${AFFIRMATIVE[*]} =~ $answer ]]; then
+			echo -e "${GreenText}Installing TAI...${NC}"
+			apt-get install "$TAI" -y --allow-unauthenticated
+			echo -e "${GreenText}TAI has been installed.${NC}"
+		else
+			echo -e "${RedText}Skipping TAI Install.${NC}"
+			exit 6 # We are done anyway.
+		fi
+}
+#========================================
+detect_jb(){
+	if [[ -d "/taurine" ]]; then
+		jb="${PinkText}Taurine${NC}"
+		Procursus_Rootful=True
+	elif [[ -d "/odyssey" ]]; then
+		jb="${PinkText}Odyssey${NC}"
+		Procursus_Rootful=True
+	elif [[ -e /.installed_odyssey ]]; then
+		jb="${PinkText}${BlackBG}Odysseyra1n${NC}"
+		Procursus_Rootful=True
+	elif [[ -e /.installed_unc0ver ]]; then
+		jb="${BlackText}${WhiteBG}unc0ver${NC}"
+		Bingner=True
+	elif [[ -e /.bootstrapped ]]; then
+		jb="${WhiteText}${BlackBG}Checkra1n${NC}"
+		Bingner=True
+	else
+		jb="N/A"
+		exit 5 # Unknown Environment
+	fi
+}
+#========================================
+detect_os_version(){
+	ios_version="$(sw_vers -productVersion)"
+	if [[ $ios_version -eq 15 ]]; then
+		echo -e "${RedText}iOS 15 and later is not supported.$(NC)"
+		exit 3 # iOS 15 and later is not supported yet.
+	fi
+}
+#========================================
 checkInstall(){
 	Depends="$1"
 	shift 1
 	Version="$1"
-
 	installedVersion=$(apt list --installed 2>/dev/null | grep -w "$Depends" | sed 's/randy420//g' | sed 's/[^0-9]*//g' | sed -r 's/(.{1})/\1./g' |  sed 's/.$//')
-
 	if [[ "$installedVersion" == "$Version" ]]; then
-		echo -e "${LG}Dependencies up to date${NC}\n"
+		echo -e "${GreenText}Dependencies up to date${NC}\n"
 		return 0
 	elif [[ "$installedVersion" == "" ]]; then
-		echo -e "${P}Should install dependencies${NC}\n"
+		echo -e "${YellowText}Should install dependencies${NC}\n"
 		return 1
 	else
-		echo -e "${P}Should upgrade dependencies${NC}\n"
+		echo -e "${YellowText}Should upgrade dependencies${NC}\n"
 		return 2
 	fi
 }
-
+#========================================
 whatsHappening(){
 	wagwan=$1
 	shift 1
@@ -55,80 +104,40 @@ whatsHappening(){
 	package=$1
 
 	if [ "$settings" -eq 0 ]; then
-		(tput setaf 6)
+		echo -e "${YellowText}"
 	fi
 	echo -e "${wagwan}\n"
 	if [ "$settings" -eq 0 ]; then
-		(tput setaf 2)
-		echo -e "I suggest you connect to Wi-Fi network before proceeding.\n"
-		sleep 3
-
-		echo -e "Hey seriously, if you don't want mobile data (less than ~300MB) to be used.\n"
-		sleep 5
+		echo -e "${GreenText}I suggest you connect to Wi-Fi network before proceeding.\nHey seriously, if you don't want mobile data (less than ~600MB) to be used.\n"
+		sleep 2
 	fi
-
 	apt-get "${installType}" "${package}" -y --allow-unauthenticated
 }
+#========================================
 while getopts ":~" opt; do
 	case ${opt} in
 		"~") # process option h
-			B=''			#Black
-			LG=''			#Green
-			P=''			#Purple
-			NC=''			#Default shell colour
-			settings=1
+			BlackText=''
+			WhiteText=''
+			GreenText=''
+			RedText=''
+			YellowText=''
+			PinkText=''
+			BlackBG=''
+			WhiteBG=''
+			NC=''	
 		;;
+		*)
 	esac
 done
-
-procursus=(/.procursus_strapped)
-
+#========================================
 if [ "$settings" -eq 0 ]; then
 #========================================
-	iosv="$(sw_vers -productVersion)"
-
-	jbd=/private/var/jb/cheyote
-	if test -d "$jbd"; then
-		jb=$(tput setaf 5;)"Cheyote"
-	else
-		jbd=/taurine
-		if test -d "$jbd"; then
-			jb=$(tput setaf 5;)"Taurine"
-		else
-			jbd=/odyssey
-			if test -d "$jbd";then 
-				jb="$(tput setaf 5;)Odyssey"
-			else
-				jbd=/.installed_odyssey
-				if test -f "$jbd"; then 
-					jb="$(tput setab 0;)$(tput setaf 5;)Odysseyra1n"
-				else
-					jbd=/.installed_unc0ver
-					if test -f "$jbd"; then
-						jb="$(tput setaf 0;)$(tput setab 7;)unc0ver"
-					else
-						jbd=/.bootstrapped
-						if test -f "$jbd"; then
-							jb="$(tput setaf 7;)$(tput setab 0;)checkra1n"
-						else
-							jb="$(tput setaf 1;)Unknown Jailbreak?"
-						fi
-					fi
-				fi
-			fi
-		fi
-	fi
+detect_jb
 #========================================
-	if [[ $iosv -eq 17 ]]; then
-		echo "$(tput setaf 1;) iOS 17 not supported at this moment "
-		exit
-	fi
+detect_os_version
 #========================================
-
-	(tput setab 0)
-	(tput setaf 2)
-	clear
-
+echo -e "${NC} Prep is done. ${GreenText}"; clear
 cat << EOF
  _____  _     ___ 
 |_   _|/ \   |_ _|
@@ -143,33 +152,22 @@ cat << EOF
 |___|_| |_|___/\__\__ _|_|_|\___|_|   
 
 EOF
-
+#========================================
 echo -e "\nTheos Dependency Installer:\nWritten by: Turann_ and Randy420\n"
-
-#========================================
-	echo "iOS Version: $iosv"
-	echo "Jailbreak: $jb"
-	(tput setab 0)
-	(tput setaf 2)
-#========================================
-	echo ""
-	echo ""
+echo -e "Device model: $(uname -m)\nOS: $(sw_vers -productVersion) | $(sw_vers -buildVersion)\nJailbreak: $jb ${NC}"
 fi
-
+#========================================
 checkRoot
-
-if test -f "$procursus" ; then
-	# Handling wrong package.
+#========================================
+if [ "$Procursus_Rootful" == True ];then
     if dpkg -s $otherDepends >/dev/null 2>&1; then # If other deb is installed, remove it.
         echo "Removing dependent: $otherDepends" # Tell to user this shouldn't be here.
         apt-get remove $otherDepends -y # 3 2 1... Action Remove wrong package
 		apt-get autoremove -y # Remove packages which comes from wrong package
 		dpkg --configure -a # Installing wrong package likely leaves dpkg in a bad state, so we fix it.
     fi
-
     checkInstall "${uncoolstarDepends}" "${uncoolstarVersion}"
     whatToDo="$?"
-
 	if [[ "$whatToDo" == "0" ]]; then
 		echo -e "\n"
 	elif [[ "$whatToDo" == "1" ]]; then
@@ -177,17 +175,19 @@ if test -f "$procursus" ; then
 	else
 		whatsHappening "Should update from Procursus" "upgrade" "${uncoolstarDepends}"
 	fi
-else
+elif [ "$Procursus_Rootless" == True ];then
+	# We have something to do in future.
+	echo -e "${RedText}Rootless jailbreaks are not supported yet.$(NC)"
+	exit 4 # Rootless jailbreaks are not supported yet.
+elif [ "$Bingner" == True ];then
     if dpkg -s $uncoolstarDepends >/dev/null 2>&1; then # If Coolstar deb is installed, remove it.
         echo "Wrong Package installed, Uninstalling: $uncoolstarDepends" # Tell to user this shouldn't be here. 
         apt-get remove $uncoolstarDepends -y # 3 2 1... Action Remove wrong package
 		apt-get autoremove -y # Remove packages which comes from wrong package
 		dpkg --configure -a # Installing wrong package likely leaves dpkg in a bad state, so we fix it.
     fi
-
     checkInstall "${otherDepends}" "${otherVersion}"
     whatToDo="$?"
-
 	if [[ "$whatToDo" == "0" ]]; then
 		echo -e "\n"
 	elif [[ "$whatToDo" == "1" ]]; then
@@ -196,27 +196,10 @@ else
 		whatsHappening "Should update from Bingner" "upgrade" "${otherDepends}"
 	fi
 fi
-
-echo ""
-
-#To install TAI.
-#apt install com.randy420.tai -y --allow-unauthenticated
-echo ""
-if dpkg -s $TAI >/dev/null 2>&1; then
-    echo -e "We are done here. \nProceeding to installing theos step."
-	else
-    read -rp "You don't have TAI installed. Do you want to install it? (y/n) " installTAI
-    case $(echo "$installTAI" | tr '[:upper:]' '[:lower:]') in
-        [yY]) apt-get install com.randy420.tai -y --allow-unauthenticated
-            echo -e "We are done here. \nProceeding to installing theos step."
-            ;;
-        *) 
-			echo -e "Oh so you don't want to install TAI? \nWell, you can install anytime you want."
-            exit 0
-            ;;
-    esac
-fi
-
-#Just to make sure everything is configured.
+#========================================
+installTAI
+echo -e "We are done."
 dpkg --configure -a
+#========================================
 exit 0
+#========================================
